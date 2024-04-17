@@ -29,7 +29,7 @@ class LecturesState extends State<Lectures> {
         name: "AI/ML",
         startTime: "09:00 AM",
         endTime: "11:00 AM",
-        lectureStatus: LectureStatus.upComing));
+        lectureStatus: LectureStatus.finished));
     lectureList.add(Lecture(
         name: "PYTHON",
         startTime: "11:10 AM",
@@ -53,13 +53,14 @@ class LecturesState extends State<Lectures> {
             context,
             lectureList[index].name ?? "",
             lectureList[index].startTime ?? "",
-            lectureList[index].endTime ?? "");
+            lectureList[index].endTime ?? "",
+            lectureList[index].lectureStatus);
       },
     );
   }
 
-  Widget lectureCard(
-      BuildContext context, name, String startTime, String endTime) {
+  Widget lectureCard(BuildContext context, name, String startTime,
+      String endTime, LectureStatus lectureStatus) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -75,7 +76,7 @@ class LecturesState extends State<Lectures> {
                   style: const TextStyle(fontSize: 30),
                 ),
                 Chip(
-                  label: const Text("Upcoming"),
+                  label: Text(getTextForLectureStatus(lectureStatus)),
                   side: BorderSide.none,
                   backgroundColor:
                       Theme.of(context).colorScheme.secondaryContainer,
@@ -90,5 +91,22 @@ class LecturesState extends State<Lectures> {
         ),
       ),
     );
+  }
+
+  String getTextForLectureStatus(LectureStatus status) {
+    switch (status) {
+      case LectureStatus.none:
+        return 'None';
+      case LectureStatus.upComing:
+        return 'Upcoming';
+      case LectureStatus.onGoing:
+        return 'Ongoing';
+      case LectureStatus.cancelled:
+        return 'Cancelled';
+      case LectureStatus.finished:
+        return 'Finished';
+      default:
+        return '';
+    }
   }
 }

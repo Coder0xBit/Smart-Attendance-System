@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_app/main.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,9 +21,30 @@ class _LoginPage extends State<LoginPage> {
     passwordVisible = true;
   }
 
-  void validateLogin() {
+  bool validateLogin() {
     bool isTrueEmail = false;
     bool isTruePassword = false;
+    bool isEmailEmpty = false;
+    bool isPasswordEmpty = false;
+
+    if (emailIdController.text.isEmpty) {
+      isEmailEmpty = true;
+      setState(() {
+        emailErrorMessage = "Email Can't be empty";
+      });
+    }
+
+    if (passwordController.text.isEmpty) {
+      isPasswordEmpty = true;
+      setState(() {
+        passwordErrorMessage = "Password Can't be empty";
+      });
+    }
+
+    if (emailIdController.text.isEmpty || passwordController.text.isEmpty) {
+      return !isEmailEmpty || !isPasswordEmpty;
+    }
+
     if (emailIdController.text != "123@gmail.com") {
       setState(() {
         emailErrorMessage = "Wrong Email";
@@ -32,7 +52,6 @@ class _LoginPage extends State<LoginPage> {
     } else if (emailIdController.text == "123@gmail.com") {
       isTrueEmail = true;
       setState(() {
-
         emailErrorMessage = null;
       });
     }
@@ -40,21 +59,14 @@ class _LoginPage extends State<LoginPage> {
       setState(() {
         passwordErrorMessage = "Wrong Password";
       });
-    } 
-    else if(passwordController.text == "123") {
+    } else if (passwordController.text == "123") {
       isTruePassword = true;
-       setState(() {
+      setState(() {
         passwordErrorMessage = null;
       });
     }
-    if(isTrueEmail && isTruePassword) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      Navigator.pop(context);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const MainScaffold(title: "Attendence")));
-    }
+
+    return isTrueEmail && isTruePassword;
   }
 
   @override
@@ -119,7 +131,15 @@ class _LoginPage extends State<LoginPage> {
                 height: 55.0,
                 child: FilledButton(
                     onPressed: () {
-                      validateLogin();
+                      if (validateLogin()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const MainScaffold(title: "Attendence")));
+                      }
                     },
                     child: const Text(
                       "Login",
